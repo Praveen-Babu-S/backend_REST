@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// update handler
 func UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	db := schema.SetUp()
 	params := mux.Vars(r)

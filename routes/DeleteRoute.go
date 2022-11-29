@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// delete handler
 func DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	db := schema.SetUp()
 	params := mux.Vars(r)

@@ -7,6 +7,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// setting up connection to database
 func SetUp() *gorm.DB {
 	var db, err = gorm.Open("postgres", "user=postgres password=root dbname=gorm sslmode=disable")
 	if err != nil {
