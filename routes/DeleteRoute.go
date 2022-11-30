@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -14,6 +13,6 @@ func DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	db := schema.SetUp()
 	params := mux.Vars(r)
 	id, _ := strconv.Atoi(params["id"])
-	fmt.Println(id)
+	// fmt.Println(id)
 	db.Where(&Product{ID: id}).Delete(&Product{})
 }

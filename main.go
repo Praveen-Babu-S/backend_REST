@@ -1,11 +1,13 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
 
 	"example.com/microservice/routes"
+	"example.com/microservice/schema"
 	"github.com/gorilla/mux"
 )
 
@@ -19,6 +21,8 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 func main() {
 	// db := schema.App()
 	// fmt.Println(db)
+	dbCredentials := flag.String("cred", "", "Db Credentials") //receiving db credentails through CLI
+	schema.PassCred(dbCredentials)                             //passing db credentials
 	router := mux.NewRouter()
 	//Home Route
 	router.HandleFunc("/", homePage).Methods("GET")
@@ -36,5 +40,7 @@ func main() {
 	router.HandleFunc("/api/products/{id}/delete", routes.DeleteProduct).Methods("DELETE")
 	//edit product route
 	router.HandleFunc("/api/products/{id}/update", routes.UpdateProduct).Methods("PATCH")
+	//edit reiew route
+	router.HandleFunc("/api/products/{id}/reviews/{rid}/update", routes.UpdateReviews).Methods("PATCH")
 	log.Fatal(http.ListenAndServe(":4000", router))
 }

@@ -8,8 +8,15 @@ import (
 )
 
 // setting up connection to database
+var dbCred *string
+
+func PassCred(s *string) {
+	dbCred = s
+}
 func SetUp() *gorm.DB {
-	var db, err = gorm.Open("postgres", "user=postgres password=root dbname=gorm sslmode=disable")
+
+	// "user=postgres password=root dbname=gorm sslmode=disable"
+	var db, err = gorm.Open("postgres", *dbCred)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
