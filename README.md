@@ -1,8 +1,7 @@
 # backend_microservices
 
 # e-commerce api end points
-
-# use go mod tidy to install all the pcakages that are used 
+use go mod tidy to install all the pcakages that are used 
 
 /  ->home route   (GET) 
 
