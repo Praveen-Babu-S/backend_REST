@@ -1,13 +1,11 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"net/http"
 
-	"example.com/microservice/routes"
-	"example.com/microservice/schema"
+	"example.com/microservice/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -21,26 +19,27 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 func main() {
 	// db := schema.App()
 	// fmt.Println(db)
-	dbCredentials := flag.String("cred", "", "Db Credentials") //receiving db credentails through CLI
-	schema.PassCred(dbCredentials)                             //passing db credentials
+	// "postgres", "user=postgres password=root dbname=gorm sslmode=disable"
+	// dbCredentials := flag.String("cred", "", "Db Credentials") //receiving db credentails through CLI
+	// schema.PassCred(*dbCredentials)                            //passing db credentials
 	router := mux.NewRouter()
 	//Home Route
 	router.HandleFunc("/", homePage).Methods("GET")
 	//Produucts page route
-	router.HandleFunc("/api/products", routes.ProductsPage).Methods("GET")
+	router.HandleFunc("/api/products", handlers.GetProducts).Methods("GET")
 	//Single product route
-	router.HandleFunc("/api/products/{id}", routes.ProductPage).Methods("GET")
+	router.HandleFunc("/api/products/{id}", handlers.GetProductById).Methods("GET")
 	//reviews page route
-	router.HandleFunc("/api/products/{id}/reviews", routes.ReviewsPage).Methods("GET")
+	router.HandleFunc("/api/products/{id}/reviews", handlers.GetReviws).Methods("GET")
 	//Add product route
-	router.HandleFunc("/api/products/create", routes.AddProduct).Methods("POST")
+	router.HandleFunc("/api/products/create", handlers.AddProduct).Methods("POST")
 	//add review route
-	router.HandleFunc("/api/products/{id}/reviews/create", routes.AddReview).Methods("POST")
+	router.HandleFunc("/api/products/{id}/reviews/create", handlers.AddReview).Methods("POST")
 	//delete product route
-	router.HandleFunc("/api/products/{id}/delete", routes.DeleteProduct).Methods("DELETE")
+	router.HandleFunc("/api/products/{id}/delete", handlers.DeleteProductById).Methods("DELETE")
 	//edit product route
-	router.HandleFunc("/api/products/{id}/update", routes.UpdateProduct).Methods("PATCH")
+	router.HandleFunc("/api/products/{id}/update", handlers.UpdateProductById).Methods("PATCH")
 	//edit reiew route
-	router.HandleFunc("/api/products/{id}/reviews/{rid}/update", routes.UpdateReviews).Methods("PATCH")
+	router.HandleFunc("/api/products/reviews/{rid}/update", handlers.UpdateReviewById).Methods("PATCH")
 	log.Fatal(http.ListenAndServe(":4000", router))
 }
