@@ -1,20 +1,20 @@
 package models
 
 type Product struct {
-	ID       int       `json:"id"`
-	Name     string    `json:"name"`
-	Desc     string    `json:"desc"`
-	Category string    `json:"category"`
-	Reviews  []Review  `json:"reviews"`
-	Variants []Variant `json:"variants"`
+	ID       int       `json:"id,omitempty"`
+	Name     string    `json:"name,omitempty"`
+	Desc     string    `json:"desc,omitempty"`
+	Category string    `json:"category,omitempty"`
+	Reviews  []Review  `json:"reviews,omitempty"`
+	Variants []Variant `json:"variants,omitempty"`
 }
 
 type Review struct {
-	ID        int    `json:"id"`
-	UserName  string `json:"user_name"`
-	Desc      string `json:"desc"`
-	Rating    uint8  `json:"stars"`
-	ProductID int    `json:"product_id"`
+	ID        int    `json:"id,omitempty"`
+	UserName  string `json:"user_name,omitempty"`
+	Desc      string `json:"desc,omitempty"`
+	Rating    uint8  `json:"stars,omitempty"`
+	ProductID int    `json:"product_id,omitempty"`
 }
 
 type Variant struct {
