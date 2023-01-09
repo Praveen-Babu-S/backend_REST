@@ -9,11 +9,6 @@ import (
 )
 
 // setting up connection to database
-var dbCred string
-
-func PassCred(s string) {
-	dbCred = s
-}
 func SetUp() *gorm.DB {
 
 	// "user=postgres password=root dbname=gorm sslmode=disable"
@@ -25,11 +20,9 @@ func SetUp() *gorm.DB {
 	// defer db.Close()
 	return db
 }
+
 func App() *gorm.DB {
 	db := SetUp()
-	//creating table for Products
-	db.DropTable(&models.Product{})
-	db.CreateTable(&models.Product{})
 
 	//creating table for Reviews
 	db.DropTable(&models.Review{})
@@ -38,6 +31,11 @@ func App() *gorm.DB {
 	//creating table for variants
 	db.DropTable(&models.Variant{})
 	db.CreateTable(&models.Variant{})
+
+	//creating table for Products
+	db.DropTable(&models.Product{})
+	db.CreateTable(&models.Product{})
+
 	//setting foreign key for reviews table
 	db.Debug().Model(&models.Review{}).AddForeignKey("product_id", "products(id)", "CASCADE", "CASCADE")
 	//setting foreign key for variants table
@@ -67,27 +65,3 @@ func App() *gorm.DB {
 	fmt.Println("Working!")
 	return db
 }
-
-// type Product struct {
-// 	ID       int
-// 	Name     string
-// 	Desc     string
-// 	Category string
-// 	Reviews  []Review
-// 	Variants []Variant
-// }
-
-// type Review struct {
-// 	ID        int
-// 	UserName  string
-// 	Desc      string
-// 	Rating    uint8
-// 	ProductID int
-// }
-
-// type Variant struct {
-// 	ID        int
-// 	Color     string
-// 	Image     string
-// 	ProductID int
-// }

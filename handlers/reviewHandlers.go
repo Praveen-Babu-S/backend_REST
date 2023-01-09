@@ -7,31 +7,43 @@ import (
 	"net/http"
 	"strconv"
 
+	"example.com/microservice/dbcall"
 	models "example.com/microservice/models"
-	"example.com/microservice/schema"
 	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
 )
 
+type ReviewsServices interface {
+	GetReviws(http.ResponseWriter, *http.Request)
+	AddReview(http.ResponseWriter, *http.Request)
+	UpdateReviewById(http.ResponseWriter, *http.Request)
+}
+
+type Review struct {
+	Db *gorm.DB
+}
+
 // Handers for fetching all the reviews for the particular product
-func GetReviws(w http.ResponseWriter, r *http.Request) {
+func (r *Review) GetReviews(w http.ResponseWriter, req *http.Request) {
 	// fmt.Fprintf(w, "This is reviews Page for particular product\n")
-	db := schema.SetUp()
-	params := mux.Vars(r)
+	db := r.Db
+	params := mux.Vars(req)
 	id, _ := strconv.Atoi(params["id"])
 	// fmt.Println(id)
 	reviews := []models.Review{}
-	db.Where(&models.Review{ProductID: id}).Find(&reviews)
+	// db.Where(&models.Review{ProductID: id}).Find(&reviews)
+	reviews = dbcall.GormDb{Db: db}.GetReviewById(id, reviews)
 	jsonReviews, _ := json.Marshal(&reviews)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonReviews)
 }
 
 // Handlers for posting the new review for the given product
-func AddReview(w http.ResponseWriter, r *http.Request) {
-	db := schema.SetUp()
-	params := mux.Vars(r)
+func (r *Review) AddReview(w http.ResponseWriter, req *http.Request) {
+	db := r.Db
+	params := mux.Vars(req)
 	id, _ := strconv.Atoi(params["id"])
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(req.Body)
 	fmt.Fprintln(w, body)
 	if err != nil {
 		panic(err)
@@ -42,17 +54,18 @@ func AddReview(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	review.ProductID = id
-	db.Create(&review)
+	// db.Create(&review)
+	dbcall.GormDb{Db: db}.AddReview(review)
 	w.Write([]byte("Review Added Successfully!"))
 }
 
 // handlers for updating the reviews by the given review id
-func UpdateReviewById(w http.ResponseWriter, r *http.Request) {
-	db := schema.SetUp()
-	params := mux.Vars(r)
+func (r *Review) UpdateReviewById(w http.ResponseWriter, req *http.Request) {
+	db := r.Db
+	params := mux.Vars(req)
 	// id, _ := strconv.Atoi(params["id"])
 	rid, _ := strconv.Atoi(params["rid"])
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
 		panic(err)
 	}
@@ -63,6 +76,7 @@ func UpdateReviewById(w http.ResponseWriter, r *http.Request) {
 	}
 	// rew.ProductID = id
 	// Update with struct
-	db.Model(models.Review{}).Where("id = ?", rid).Updates(rew)
+	// db.Model(models.Review{}).Where("id = ?", rid).Updates(rew)
+	dbcall.GormDb{Db: db}.UpdateReviewById(rid, rew)
 	w.Write([]byte("Product Updated Successfully!"))
 }
